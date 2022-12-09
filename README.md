@@ -19,7 +19,7 @@ Discretization of the PEP using finite element methods. The discretization is im
 - `petsc4py`: sparse linear algebra.
 - `slepc`: sparse eigensolver.
 
-Most scripts rely on modules available in the repository [python-scientific-computing-utils](TODO). These modules are identified by the `_utils` suffix.
+Most scripts rely on modules available in the repository [python-scientific-computing-utils](https://github.com/fmonteghetti/python-scientific-computing-utils). These modules are identified by the `_utils` suffix.
 
 
 	bem/
