@@ -73,7 +73,7 @@ SLEPc_params = {
     'shift': 0.65,
     'problem_type': SLEPc.EPS.ProblemType.GNHEP,
     'solver': SLEPc.EPS.Type.KRYLOVSCHUR,
-    'tol': 1e-8,
+    'tol': 1e-15,
     'max_it': 1000
 }
 OptDB = PETSc.Options()
@@ -128,7 +128,7 @@ geo_param={
     'Nmu': 1, # element in structured layer (1 recommended)
     'Nint': 100, # nodes along sign-changing interface
     'GeomProgint': 1.04, # geometric progression (larger than 1)
-    'Nz': 200, # element in z-direction in corner region
+    'Nz': 100, # element in z-direction in corner region
     'CharLengthMin_adim': 1, # Characteristic mesh size (ratio)
     'CharLengthMax_adim': 1,
     'GenerateQuadMesh': 1
@@ -142,7 +142,7 @@ PEP = build_PEP(gmshfile,name,
 PEP.set_exact_eigenvalues(kappa_ex_even_fun,kappa_ex_odd_fun)
 V_fem = ("CG", gmsh_param['order'])
 PEP.assemble(V_fem)
-alpha = np.exp(1j*np.pi/5); # PML angle
+alpha = np.exp(1j*np.pi/6); # PML angle
 PEP.solve(SLEPc_params,alpha=alpha,tolReIm=1e-6)
 eta = np.linspace(1e-16,8,200); # in (0,inf)
 f = plt.figure()
@@ -184,15 +184,15 @@ geo_param={
     'a_o':a_o,'b_o':b_o,
     'a_d':a_d,'b_d':b_d, 
     'phi':phi[0],
-    'R_PML': 1e-1,  # R_PML/R radius of PML region
+    'R_PML': 8e-1,  # R_PML/R radius of PML region
     'R_TR': 1e-20, # R_TR/R radius of truncated region
     'x_ofst':x_offset[0], 'y_ofst': y_offset[0],
     'Nmu': 1, # element in structured layer (1 recommended)
     'Nint': 100, # nodes along sign-changing interface
     'GeomProgint': 1.01, # geometric progression (larger than 1)
-    'Nz': 50, # element in z-direction in corner region
+    'Nz': 100, # element in z-direction in corner region
     'CharLengthMin_adim': 1, # Characteristic mesh size (ratio)
-    'CharLengthMax_adim': 5,
+    'CharLengthMax_adim': 2,
     'GenerateQuadMesh': 1
 }
     # Mesh generation, assembly, and solve
@@ -204,7 +204,7 @@ PEP = build_PEP(gmshfile,name,
 PEP.set_exact_eigenvalues(kappa_ex_even_fun,kappa_ex_odd_fun)
 V_fem = ("CG", gmsh_param['order'])
 PEP.assemble(V_fem)
-alpha = np.exp(1j*np.pi/5); # PML angle
+alpha = np.exp(1j*np.pi/6); # PML angle
 PEP.solve(SLEPc_params,alpha=alpha,tolReIm=1e-6)
 eta = np.linspace(1e-16,8,200); # in (0,inf)
 f = plt.figure()
@@ -253,7 +253,7 @@ geo_param={
     'Nint': 100, # nodes along sign-changing interface
     'Nint_corner': 1,
     'GeomProgint': 1 - 0.1, # geometric progression (smaller than 1)
-    'Nz': 20, # element in z-direction in corner region
+    'Nz': 50, # element in z-direction in corner region
     'CharLengthMin_adim': 1, # Characteristic mesh size (ratio)
     'CharLengthMax_adim': 2,
     'GenerateQuadMesh': 1
