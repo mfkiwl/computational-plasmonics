@@ -36,7 +36,7 @@ def build_mesh(geofile,geo_param,gmsh_param):
 OptDB = PETSc.Options()
 OptDB["st_ksp_type"] = "preonly"
 OptDB["st_pc_type"] = "lu"
-OptDB["st_pc_factor_mat_solver_type"] = "mumps"
+OptDB["st_pc_factor_mat_solver_type"] = "umfpack"
 SLEPc_params = {
     'nev': 50,
     'target': 0.75,
@@ -91,7 +91,7 @@ gmsh_param = {
 geo_param={
     'a_m':a_m,'b_m':b_m, # sign-changing interface
     'a_d':a_d,'b_d':b_d, # Dirichlet ellipse
-    'Nint':70,
+    'Nint':500,
     'GeomProgint':0.9, # smaller than one (refinment towards tip)
     'CharLengthMin_adim':1, # Characteristic mesh size (ratio)
     'CharLengthMax_adim':2,
@@ -108,15 +108,15 @@ fe.plot(dmesh.mesh,title=f"{os.path.basename(gmshfile)} \n {dmesh.mesh.num_verti
 
     # Finite element assembly
 # Assemble standard formulation
-V = fe.FunctionSpace(dmesh.mesh, 'P', 1) # 'CR' (best) or 'P'
+V = fe.FunctionSpace(dmesh.mesh, 'CR', 1) # 'CR' (best) or 'P'
 (A_m,A_d) = PEP_utils.assemble_PEP_no_PML(V, dmesh, 
                         PhysName_2D_tag['omega-m'], 
                         PhysName_2D_tag['omega-d'], 
                         PhysName_1D_tag['gamma-d'],
                         diag_Am=1e2, diag_Ad=1e-2)
 #% Assemble mixed formulation
-# BDM = fe.FiniteElement("BDM", dmesh.mesh.ufl_cell(), 1)
-# DG  = fe.FiniteElement("DG", dmesh.mesh.ufl_cell(), 1)  
+BDM = fe.FiniteElement("BDM", dmesh.mesh.ufl_cell(), 1)
+DG  = fe.FiniteElement("DG", dmesh.mesh.ufl_cell(), 1)  
 # W = fe.FunctionSpace(dmesh.mesh, BDM * DG)
 # (A_m,A_d) = PEP_utils.assemble_PEP_no_PML_mixed(W,dmesh, 
 #                         PhysName_2D_tag['omega-m'], 
@@ -124,11 +124,11 @@ V = fe.FunctionSpace(dmesh.mesh, 'P', 1) # 'CR' (best) or 'P'
 #                         PhysName_1D_tag['gamma-d'],
 #                         diag_Am=1e2, diag_Ad=1e-2)
 #% Assemble DG formulation based on BZ Primal
-# (V,A_m,A_d) = PEP_utils.assemble_PEP_no_PML_DG_BZ(1,dmesh,
-#                         PhysName_2D_tag['omega-m'], 
-#                         PhysName_2D_tag['omega-d'], 
-#                         PhysName_1D_tag['gamma-d'],
-#                         diag_Am=1e2, diag_Ad=1e-2)
+(V,A_m,A_d) = PEP_utils.assemble_PEP_no_PML_DG_BZ(1,dmesh,
+                         PhysName_2D_tag['omega-m'], 
+                         PhysName_2D_tag['omega-d'], 
+                         PhysName_1D_tag['gamma-d'],
+                         diag_Am=1e2, diag_Ad=1e-2)
 #% Assemble DG formulation based on BZ mixed
 # (W,A_m,A_d) = PEP_utils.assemble_PEP_no_PML_DG_BZM(1,dmesh,
 #                         PhysName_2D_tag['omega-m'], 
