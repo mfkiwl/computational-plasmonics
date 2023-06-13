@@ -69,7 +69,8 @@ Physical Curve("gamma-d", 6) = {1};
 Physical Surface("omega-d", 7) = {2};
 //+
 Physical Surface("omega-m", 8) = {1};
-
+//+
+Physical Curve("gamma-m", 7) = {4,5};
 
     // -- Meshing
         // Characteristic length based
